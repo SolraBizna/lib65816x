@@ -1,0 +1,4 @@
+config/sizeof
+lib65816/config.h
+*.o
+*.a
