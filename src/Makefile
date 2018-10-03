@@ -11,7 +11,7 @@ UNITS := $D/cpu		 \
 
 SRCS	:= $(UNITS:%=%.c)
 OBJS	:= $(UNITS:%=%.o)
-LIBNAME := $D/lib65816.a
+LIBNAME := $D/lib65816x.a
 
 INSTALL := $D/install
 CLEAN   := $D/clean

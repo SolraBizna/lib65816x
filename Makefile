@@ -12,10 +12,10 @@ ALL_CONFIG          :=
 ALL_LIBS            :=
 ALL_INSTALLS        :=
 
-CONFIG_H_TARGET     := lib65816/config.h
+CONFIG_H_TARGET     := lib65816x/config.h
 $(call subdir,config)
 
-$(call subdir,lib65816)
+$(call subdir,lib65816x)
 $(call subdir,src)
 
 .c.o:

@@ -10,8 +10,8 @@
  * Modified for greater portability and virtual hardware independence.
  */
 
-#include <lib65816/config.h>
-#include <lib65816/cpu.h>
+#include <lib65816x/config.h>
+#include <lib65816x/cpu.h>
 
 int	cpu_reset;
 int	cpu_abort;

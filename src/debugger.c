@@ -8,11 +8,11 @@
  * with bugs and utterly lacking in suitable features.
  */
 
-#include <lib65816/config.h>
+#include <lib65816x/config.h>
 
 #ifdef DEBUG
 
-#include <lib65816/cpu.h>
+#include <lib65816x/cpu.h>
 #include <stdio.h>
 
 #include "cpumicro.h"

@@ -12,7 +12,8 @@
 
 #define CPU_DISPATCH
 
-#include <lib65816/cpu.h>
+#include <lib65816x/cpu.h>
+#include <lib65816x/cpuevent.h>
 #include "cpumicro.h"
 
 dualw   A;  /* Accumulator               */

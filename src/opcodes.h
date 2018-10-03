@@ -10,7 +10,7 @@
  * Modified for greater portability and virtual hardware independence.
  */
 
-#include <lib65816/cpu.h>
+#include <lib65816x/cpu.h>
 #include "cpumacro.h"
 #include "cpumicro.h"
 #include "cycles.h"
@@ -1695,8 +1695,9 @@ BEGIN_CPU_FUNC(nmi)
 END_CPU_FUNC
 
 BEGIN_CPU_FUNC(irq)
-	cpu_irq = 0;
+	// cpu_irq = 0;
 	cpu_wait = 0;
+	atmp.A = EMUL_getInterruptVector(cpu_irq);
 #ifdef NATIVE_MODE
 	S_PUSH(PC.B.PB);
 	S_PUSH(PC.B.H);
@@ -1705,8 +1706,8 @@ BEGIN_CPU_FUNC(irq)
 	F_setD(0);
 	F_setI(1);
 	PC.B.PB = 0x00;
-	PC.B.L = M_READ_VECTOR(0xFFEE);
-	PC.B.H = M_READ_VECTOR(0xFFEF);
+	PC.B.L = M_READ_VECTOR(atmp.A);
+	PC.B.H = M_READ_VECTOR(atmp.A+1);
 	cpu_cycle_count += 8;
 #else
 	S_PUSH(PC.B.H);
@@ -1717,8 +1718,8 @@ BEGIN_CPU_FUNC(irq)
 	F_setB(1);
 	DB = 0;
 	PC.B.PB = 0x00;
-	PC.B.L = M_READ_VECTOR(0xFFFE);
-	PC.B.H = M_READ_VECTOR(0xFFFF);
+	PC.B.L = M_READ_VECTOR(atmp.A);
+	PC.B.H = M_READ_VECTOR(atmp.A+1);
 	cpu_cycle_count += 7;
 #endif
 END_CPU_FUNC

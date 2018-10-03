@@ -5,7 +5,7 @@
  * Copyright 2007 by Samuel A. Falvo II
  */
 
-#include <lib65816/cpuevent.h>
+#include <lib65816x/cpuevent.h>
 #include <stdio.h>
 
 struct List
