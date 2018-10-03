@@ -1,3 +1,7 @@
+This is a fork of [lib65816](https://bitbucket.org/kc5tja/lib65816), adding support for additional interrupt vectors, such as on the [W65C265S](http://www.westerndesigncenter.com/wdc/w65c265s-chip.cfm) microcontroller.
+
+All following information comes from the original lib65816 README.
+
 Configuring and Installing lib65816
 ===================================
 
