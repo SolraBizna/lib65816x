@@ -223,7 +223,13 @@ void EMUL_handleWDM(byte opcode, word32 timestamp);
 void EMUL_hardwareUpdate(word32 timestamp);
 byte MEM_readMem(word32 address, word32 timestamp, word32 emulFlags);
 void MEM_writeMem(word32 address, byte b, word32 timestamp);
-word32 EMUL_getInterruptVector(word32 mask); /* don't forget to check E */
+
+word32 EMUL_getResetVector(); /* normally 0xFFFC */
+word32 EMUL_getNMIVector(); /* normally E ? 0xFFFA : 0xFFEA */
+word32 EMUL_getAbortVector(); /* normally E ? 0xFFF8 : 0xFFE8 */
+word32 EMUL_getBRKVector(); /* normally E ? 0xFFFE : 0xFFE6 */
+word32 EMUL_getCOPVector(); /* normally E ? 0xFFF4 : 0xFFE4 */
+word32 EMUL_getIRQVector(word32 mask); /* normally E ? 0xFFFE : 0xFFEE */
 
 #endif /* _CPU_H */
 

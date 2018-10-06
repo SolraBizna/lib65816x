@@ -41,6 +41,7 @@ extern int	cpu_update_period;
 
 BEGIN_CPU_FUNC(opcode_0x00)					/* BRK s */
     PC.W.PC++;
+	opaddr.A = EMUL_getBRKVector();
 #ifdef NATIVE_MODE
 	S_PUSH(PC.B.PB);
 	S_PUSH(PC.B.H);
@@ -49,8 +50,8 @@ BEGIN_CPU_FUNC(opcode_0x00)					/* BRK s */
 	F_setD(0);
 	F_setI(1);
 	PC.B.PB = 0x00;
-	PC.B.L = M_READ_VECTOR(0xFFE6);
-	PC.B.H = M_READ_VECTOR(0xFFE7);
+	PC.B.L = M_READ_VECTOR(opaddr.A);
+	PC.B.H = M_READ_VECTOR(opaddr.A+1);
 #else
 	S_PUSH(PC.B.H);
 	S_PUSH(PC.B.L);
@@ -60,8 +61,8 @@ BEGIN_CPU_FUNC(opcode_0x00)					/* BRK s */
 	F_setB(0);
 	DB = 0;
 	PC.B.PB = 0x00;
-	PC.B.L = M_READ_VECTOR(0xFFFE);
-	PC.B.H = M_READ_VECTOR(0xFFFF);
+	PC.B.L = M_READ_VECTOR(opaddr.A);
+	PC.B.H = M_READ_VECTOR(opaddr.A+1);
 #endif
 END_CPU_FUNC
 
@@ -72,6 +73,7 @@ END_CPU_FUNC
 
 BEGIN_CPU_FUNC(opcode_0x02)					/* COP s */
     PC.W.PC++;
+	opaddr.A = EMUL_getCOPVector();
 #ifdef NATIVE_MODE
 	S_PUSH(PC.B.PB);
 	S_PUSH(PC.B.H);
@@ -80,8 +82,8 @@ BEGIN_CPU_FUNC(opcode_0x02)					/* COP s */
 	F_setD(0);
 	F_setI(1);
 	PC.B.PB = 0x00;
-	PC.B.L = M_READ_VECTOR(0xFFE4);
-	PC.B.H = M_READ_VECTOR(0xFFE5);
+	PC.B.L = M_READ_VECTOR(opaddr.A);
+	PC.B.H = M_READ_VECTOR(opaddr.A+1);
 #else
 	S_PUSH(PC.B.H);
 	S_PUSH(PC.B.L);
@@ -90,8 +92,8 @@ BEGIN_CPU_FUNC(opcode_0x02)					/* COP s */
 	F_setI(1);
 	DB = 0;
 	PC.B.PB = 0x00;
-	PC.B.L = M_READ_VECTOR(0xFFF4);
-	PC.B.H = M_READ_VECTOR(0xFFF5);
+	PC.B.L = M_READ_VECTOR(opaddr.A);
+	PC.B.H = M_READ_VECTOR(opaddr.A+1);
 #endif
 END_CPU_FUNC
 
@@ -1634,13 +1636,15 @@ BEGIN_CPU_FUNC(reset)
 	A.W = 0;
 	X.W = 0;
 	Y.W = 0;
-	PC.B.L = M_READ_VECTOR(0xFFFC);
-	PC.B.H = M_READ_VECTOR(0xFFFD);
+	opaddr.A = EMUL_getResetVector();
+	PC.B.L = M_READ_VECTOR(opaddr.A);
+	PC.B.H = M_READ_VECTOR(opaddr.A+1);
 	CPU_modeSwitch();
 END_CPU_FUNC
 
 BEGIN_CPU_FUNC(abort)
 	cpu_wait = 0;
+	opaddr.A = EMUL_getAbortVector();
 #ifdef NATIVE_MODE
 	S_PUSH(PC.B.PB);
 	S_PUSH(PC.B.H);
@@ -1649,8 +1653,8 @@ BEGIN_CPU_FUNC(abort)
 	F_setD(0);
 	F_setI(1);
 	PC.B.PB = 0;
-	PC.B.L = M_READ_VECTOR(0xFFE8);
-	PC.B.H = M_READ_VECTOR(0xFFE9);
+	PC.B.L = M_READ_VECTOR(opaddr.A);
+	PC.B.H = M_READ_VECTOR(opaddr.A+1);
 	cpu_cycle_count += 8;
 #else
 	S_PUSH(PC.B.H);
@@ -1660,8 +1664,8 @@ BEGIN_CPU_FUNC(abort)
 	F_setI(1);
 	DB = 0;
 	PC.B.PB = 0;
-	PC.B.L = M_READ_VECTOR(0xFFF8);
-	PC.B.H = M_READ_VECTOR(0xFFF9);
+	PC.B.L = M_READ_VECTOR(opaddr.A);
+	PC.B.H = M_READ_VECTOR(opaddr.A+1);
 	cpu_cycle_count += 7;
 #endif
 END_CPU_FUNC
@@ -1669,6 +1673,7 @@ END_CPU_FUNC
 BEGIN_CPU_FUNC(nmi)
 	cpu_nmi = 0;
 	cpu_wait = 0;
+	opaddr.A = EMUL_getNMIVector();
 #ifdef NATIVE_MODE
 	S_PUSH(PC.B.PB);
 	S_PUSH(PC.B.H);
@@ -1677,8 +1682,8 @@ BEGIN_CPU_FUNC(nmi)
 	F_setD(0);
 	F_setI(1);
 	PC.B.PB = 0x00;
-	PC.B.L = M_READ_VECTOR(0xFFEA);
-	PC.B.H = M_READ_VECTOR(0xFFEB);
+	PC.B.L = M_READ_VECTOR(opaddr.A);
+	PC.B.H = M_READ_VECTOR(opaddr.A+1);
 	cpu_cycle_count += 8;
 #else
 	S_PUSH(PC.B.H);
@@ -1688,8 +1693,8 @@ BEGIN_CPU_FUNC(nmi)
 	F_setI(1);
 	DB = 0;
 	PC.B.PB = 0x00;
-	PC.B.L = M_READ_VECTOR(0xFFFA);
-	PC.B.H = M_READ_VECTOR(0xFFFB);
+	PC.B.L = M_READ_VECTOR(opaddr.A);
+	PC.B.H = M_READ_VECTOR(opaddr.A+1);
 	cpu_cycle_count += 7;
 #endif
 END_CPU_FUNC
@@ -1697,7 +1702,7 @@ END_CPU_FUNC
 BEGIN_CPU_FUNC(irq)
 	// cpu_irq = 0;
 	cpu_wait = 0;
-	atmp.A = EMUL_getInterruptVector(cpu_irq);
+	opaddr.A = EMUL_getIRQVector(cpu_irq);
 #ifdef NATIVE_MODE
 	S_PUSH(PC.B.PB);
 	S_PUSH(PC.B.H);
@@ -1706,8 +1711,8 @@ BEGIN_CPU_FUNC(irq)
 	F_setD(0);
 	F_setI(1);
 	PC.B.PB = 0x00;
-	PC.B.L = M_READ_VECTOR(atmp.A);
-	PC.B.H = M_READ_VECTOR(atmp.A+1);
+	PC.B.L = M_READ_VECTOR(opaddr.A);
+	PC.B.H = M_READ_VECTOR(opaddr.A+1);
 	cpu_cycle_count += 8;
 #else
 	S_PUSH(PC.B.H);
@@ -1718,8 +1723,8 @@ BEGIN_CPU_FUNC(irq)
 	F_setB(1);
 	DB = 0;
 	PC.B.PB = 0x00;
-	PC.B.L = M_READ_VECTOR(atmp.A);
-	PC.B.H = M_READ_VECTOR(atmp.A+1);
+	PC.B.L = M_READ_VECTOR(opaddr.A);
+	PC.B.H = M_READ_VECTOR(opaddr.A+1);
 	cpu_cycle_count += 7;
 #endif
 END_CPU_FUNC
