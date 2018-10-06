@@ -154,7 +154,7 @@ void CPU_run(void)
     word32  last_update,next_update;
     int opcode;
 
-    cpu_cycle_count = 0;
+    // cpu_cycle_count = 0;
     last_update = 0;
     next_update = cpu_update_period;
     E = 1;
@@ -163,8 +163,9 @@ void CPU_run(void)
     CPU_modeSwitch();
 
 dispatch:
-    CPUEvent_elapse( cpu_cycle_count );
-    cpu_cycle_count = 0;
+    CPUEvent_elapse( cpu_cycle_count - last_update);
+    last_update = cpu_cycle_count;
+    // cpu_cycle_count = 0;
 
 // #ifdef  E_UPDATE
 //     if (cpu_cycle_count >= next_update) goto update;
