@@ -151,10 +151,10 @@ byte    cpu_cycle_table[1300] =
 
 void CPU_run(void)
 {
-    word32  last_update,next_update;
+    word32  last_update,next_update,last_elapse;
     int opcode;
 
-    // cpu_cycle_count = 0;
+    cpu_cycle_count = 0;
     last_update = 0;
     next_update = cpu_update_period;
     E = 1;
@@ -163,13 +163,13 @@ void CPU_run(void)
     CPU_modeSwitch();
 
 dispatch:
-    CPUEvent_elapse( cpu_cycle_count - last_update);
-    last_update = cpu_cycle_count;
+    CPUEvent_elapse( cpu_cycle_count - last_elapse);
+    last_elapse = cpu_cycle_count;
     // cpu_cycle_count = 0;
 
 // #ifdef  E_UPDATE
-//     if (cpu_cycle_count >= next_update) goto update;
-// update_resume:
+    if (cpu_cycle_count >= next_update) goto update;
+  update_resume:
 // #endif
 
 #ifdef DEBUG
@@ -199,11 +199,11 @@ irq_return:
 /* we take the branch penalty (if there is one).            */
 
 // #ifdef E_UPDATE
-// update:
-//     E_UPDATE(cpu_cycle_count);
-//     last_update = cpu_cycle_count;
-//     next_update = last_update + cpu_update_period;
-//     goto update_resume;
+update:
+    E_UPDATE(cpu_cycle_count);
+    last_update = cpu_cycle_count;
+    next_update = last_update + cpu_update_period;
+    goto update_resume;
 // #endif
 
 #ifdef DEBUG
